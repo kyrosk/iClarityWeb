@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>iClarity — Ophthalmology Education</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050508;
+    --surface: #0a0a12;
+    --gold: #c9a84c;
+    --gold2: #e8c97a;
+    --iris: #3a6bc4;
+    --iris2: #5f9fff;
+    --red: #c0392b;
+    --text: #e8e4dc;
+    --muted: #6e6a62;
+    --border: rgba(201,168,76,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  #cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, opacity 0.2s;
+    mix-blend-mode: difference;
+  }
+  #cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.5);
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.3s, height 0.3s;
+  }
+
+  /* THREE.JS CANVAS */
+  #bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* OVERLAY */
+  .overlay {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    background: rgba(5,5,8,0.6);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--text); }
+  .nav-links {
+    display: none;
+    gap: 2.5rem;
+    list-style: none;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-badge {
+    display: none;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.8rem;
+    border-radius: 2px;
+  }
+  .nav-cta-mob {
+    background: var(--gold);
+    color: #050508;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.42rem 0.9rem;
+    text-decoration: none;
+  }
+  @media (min-width: 768px) {
+    nav { padding: 1.6rem 3rem; }
+    .nav-logo { font-size: 1.5rem; letter-spacing: 0.25em; }
+    .nav-links { display: flex; }
+    .nav-badge { display: inline-block; }
+    .nav-cta-mob { display: none; }
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 6rem 1.5rem 3rem;
+    position: relative;
+  }
+
+  .hero-tag {
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--border);
+    padding: 0.35rem 1rem;
+    margin-bottom: 2rem;
+    display: inline-block;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .hero-title .line2 {
+    display: block;
+    font-size: clamp(1.2rem, 4vw, 3.8rem);
+    letter-spacing: 0.2em;
+    font-weight: 300;
+    color: var(--muted);
+    margin-top: 0.4rem;
+  }
+
+  .hero-sub {
+    max-width: 480px;
+    margin: 2rem auto;
+    font-size: 0.68rem;
+    line-height: 1.9;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .hero-cta {
+    display: flex; gap: 0.8rem; justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: #050508;
+    border: none;
+    padding: 0.85rem 1.8rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold2); transform: translateY(-2px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.85rem 1.8rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.3s, color 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* STATS ROW */
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border);
+    width: 100%;
+    max-width: 500px;
+  }
+  .stat-item { text-align: center; }
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 6vw, 2.8rem);
+    font-weight: 300;
+    color: var(--gold);
+    display: block;
+  }
+  .stat-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.3rem;
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    #hero { padding: 8rem 2rem 4rem; }
+    .hero-tag { font-size: 0.62rem; letter-spacing: 0.35em; margin-bottom: 2.5rem; }
+    .hero-sub { font-size: 0.72rem; letter-spacing: 0.06em; margin: 2.5rem auto; }
+    .btn-primary, .btn-ghost { padding: 0.9rem 2.5rem; font-size: 0.68rem; letter-spacing: 0.2em; }
+    .stats-row { gap: 4rem; margin-top: 5rem; padding-top: 3rem; }
+    .stat-label { font-size: 0.6rem; letter-spacing: 0.25em; }
+  }
+
+  /* SECTION */
+  section { padding: 4rem 1.2rem; }
+  .section-tag {
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 6vw, 3.8rem);
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  @media (min-width: 768px) {
+    section { padding: 8rem 2rem; }
+  }
+
+  /* GRID */
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* PRODUCTS */
+  #products { background: transparent; }
+  .products-header { text-align: center; margin-bottom: 3rem; }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5px;
+    background: var(--border);
+  }
+  @media (min-width: 640px) {
+    .products-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  }
+
+  .product-card {
+    background: var(--surface);
+    padding: 2rem 1.6rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+    cursor: pointer;
+  }
+  @media (min-width: 768px) {
+    .product-card { padding: 2.8rem 2.5rem; cursor: none; }
+  }
+  .product-card:hover { background: #0d0d18; }
+
+  .product-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .product-card:hover::before { opacity: 1; }
+
+  .product-card .eye-preview {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin-bottom: 1.8rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .eye-orb {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+  }
+
+  .product-tag {
+    font-size: 0.58rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border: 1px solid;
+    margin-bottom: 1.2rem;
+    display: inline-block;
+  }
+  .tag-free { color: var(--iris2); border-color: rgba(95,159,255,0.3); }
+  .tag-paid { color: var(--gold); border-color: var(--border); }
+  .tag-premium { color: #e879f9; border-color: rgba(232,121,249,0.3); }
+
+  .product-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+
+  .product-desc {
+    font-size: 0.68rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1.8rem;
+    letter-spacing: 0.04em;
+  }
+
+  .product-cases {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    margin-bottom: 2rem;
+  }
+  .case-chip {
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+  }
+
+  .product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .product-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--gold);
+  }
+  .product-price small {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    vertical-align: super;
+    letter-spacing: 0.1em;
+  }
+  .product-price.free-price { color: var(--iris2); font-size: 1.4rem; }
+
+  .btn-buy {
+    background: var(--gold);
+    color: #050508;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: background 0.3s, transform 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-buy:hover { background: var(--gold2); transform: translateY(-1px); }
+
+  .btn-free {
+    background: transparent;
+    color: var(--iris2);
+    border: 1px solid rgba(95,159,255,0.4);
+    padding: 0.7rem 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-free:hover { background: rgba(95,159,255,0.1); border-color: var(--iris2); }
+
+  /* FEATURED CARD */
+  .product-card.featured {
+    grid-column: span 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: center;
+    background: linear-gradient(135deg, #0a0a12 0%, #0d0a18 100%);
+  }
+  @media (min-width: 900px) {
+    .product-card.featured {
+      grid-column: span 2;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+  }
+  .featured-visual {
+    position: relative;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  @media (min-width: 768px) {
+    .featured-visual { height: 260px; }
+  }
+  .retina-rings {
+    position: relative;
+    width: 200px; height: 200px;
+  }
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse-ring 3s ease-in-out infinite;
+  }
+  .ring:nth-child(1) { width: 80px; height: 80px; border-color: rgba(201,168,76,0.8); animation-delay: 0s; }
+  .ring:nth-child(2) { width: 130px; height: 130px; border-color: rgba(201,168,76,0.4); animation-delay: 0.4s; }
+  .ring:nth-child(3) { width: 180px; height: 180px; border-color: rgba(201,168,76,0.2); animation-delay: 0.8s; }
+  .ring-core {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--gold) 0%, rgba(201,168,76,0.3) 60%, transparent 100%);
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.05); }
+  }
+
+  /* ABOUT / TESTIMONIALS */
+  #about {
+    border-top: 1px solid var(--border);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .about-grid { grid-template-columns: 1fr 1fr; gap: 6rem; }
+  }
+
+  .about-text p {
+    font-size: 0.72rem;
+    line-height: 1.9;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.04em;
+  }
+
+  .credentials {
+    margin-top: 2rem;
+    display: flex; flex-direction: column; gap: 0.8rem;
+  }
+  .cred-item {
+    display: flex; align-items: center; gap: 1rem;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .cred-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .about-visual {
+    position: relative;
+  }
+  .tiktok-card {
+    background: #0a0a12;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+  }
+  .tiktok-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(135deg, var(--gold), transparent, var(--iris));
+    opacity: 0.15;
+    pointer-events: none;
+  }
+  .tiktok-handle {
+    font-size: 0.7rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+  }
+  .tiktok-stats {
+    display: flex; gap: 2rem; margin: 1.5rem 0;
+  }
+  .tk-stat strong {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--text);
+  }
+  .tk-stat span {
+    font-size: 0.58rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .tk-desc {
+    font-size: 0.65rem;
+    color: var(--muted);
+    line-height: 1.8;
+    letter-spacing: 0.04em;
+  }
+
+  /* PROCESS */
+  #process {
+    border-top: 1px solid var(--border);
+  }
+  .process-steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5px;
+    background: var(--border);
+    margin-top: 3rem;
+  }
+  @media (min-width: 768px) {
+    .process-steps { grid-template-columns: repeat(4, 1fr); margin-top: 4rem; }
+  }
+  .step {
+    background: var(--surface);
+    padding: 1.8rem 1.4rem;
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    .step { padding: 2.5rem 2rem; }
+  }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .step-title {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+  }
+  .step-desc {
+    font-size: 0.65rem;
+    color: var(--muted);
+    line-height: 1.8;
+    letter-spacing: 0.04em;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.2rem;
+  }
+  @media (min-width: 768px) {
+    footer {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3rem;
+      text-align: left;
+    }
+  }
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+  }
+  .footer-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+  .footer-links a {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy {
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+  }
+
+  /* SCAN LINE EFFECT */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 200;
+  }
+
+  /* GLOW DIVIDERS */
+  .glow-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.3;
+    margin: 0;
+  }
+
+  /* SCROLL FADE IN */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* EYE ICONS */
+  .eye-bg-1 { background: radial-gradient(circle at 35% 45%, #5a1e1e 0%, #1a0a0a 60%, #0a0505 100%); }
+  .eye-bg-2 { background: radial-gradient(circle at 40% 50%, #1a2a50 0%, #0a1530 60%, #050a18 100%); }
+  .eye-bg-3 { background: radial-gradient(circle at 40% 45%, #2a1a40 0%, #150a25 60%, #0a0512 100%); }
+
+  /* COMING SOON OVERLAY */
+  .coming-soon-overlay {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: rgba(110,106,98,0.15);
+    border: 1px solid rgba(110,106,98,0.3);
+    color: var(--muted);
+    font-size: 0.52rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border-radius: 2px;
+  }
+
+  /* NOTIFICATION BADGE */
+  .new-badge {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: var(--red);
+    color: white;
+    font-size: 0.52rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+  }
+
+
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Three.js Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAVIGATION -->
+<nav>
+  <a href="#" class="nav-logo">i<span>Clarity</span></a>
+  <ul class="nav-links">
+    <li><a href="#products">Library</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#process">How it Works</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:0.7rem;">
+    <a href="#products" class="nav-cta-mob">Get PDF</a>
+    <span class="nav-badge">MD · Ophthalmology</span>
+  </div>
+</nav>
+
+<!-- OVERLAY CONTENT -->
+<div class="overlay">
+
+  <!-- HERO -->
+  <section id="hero">
+    <span class="hero-tag">Clinical Education by a Real Ophthalmologist</span>
+    <h1 class="hero-title">
+      <em>See</em> What Others Miss
+      <span class="line2">Retina · In Minutes</span>
+    </h1>
+    <p class="hero-sub">
+      High-yield clinical cases, fundoscopy reads, and rapid-recognition visual guides — built for medical students, residents, and curious clinicians.
+    </p>
+    <div class="hero-cta">
+      <a href="#products" class="btn-primary">Browse the Library</a>
+      <a href="https://www.tiktok.com/@dr.iclarity" target="_blank" class="btn-ghost">Follow on TikTok</a>
+    </div>
+    <div class="stats-row fade-in">
+      <div class="stat-item">
+        <span class="stat-number">35K</span>
+        <span class="stat-label">TikTok Likes</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">12+</span>
+        <span class="stat-label">High-Yield Cases</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">Real</span>
+        <span class="stat-label">Clinical Photos</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- PRODUCTS -->
+  <section id="products">
+    <div class="container">
+      <div class="products-header fade-in">
+        <span class="section-tag">Clinical Library</span>
+        <h2 class="section-title">Choose Your <em>Guide</em></h2>
+        <p style="font-size:0.7rem;color:var(--muted);max-width:400px;margin:0 auto;line-height:1.8;letter-spacing:0.04em;">
+          Each PDF is packed with real fundoscopy images, differential diagnoses, and rapid recognition keys — the same cases I see in clinic.
+        </p>
+      </div>
+
+      <div class="products-grid">
+
+        <!-- CORE GUIDE -->
+        <div class="product-card featured fade-in">
+          <span class="new-badge">Available Now</span>
+          <div>
+            <span class="product-tag tag-paid">Core Guide</span>
+            <h3 class="product-title">Retina in Minutes — 12 High-Yield Cases</h3>
+            <p class="product-desc">The flagship visual guide. 12 carefully selected retinal cases with real clinical photos, key findings, differentials, and rapid-recognition frameworks. Designed for high-yield exam prep and clinical confidence.</p>
+            <div class="product-cases">
+              <span class="case-chip">Diabetic Retinopathy</span>
+              <span class="case-chip">CRVO / BRVO</span>
+              <span class="case-chip">AMD (Dry & Wet)</span>
+              <span class="case-chip">Retinal Detachment</span>
+              <span class="case-chip">Papilledema</span>
+              <span class="case-chip">Hypertensive Retinopathy</span>
+              <span class="case-chip">Glaucomatous Cupping</span>
+              <span class="case-chip">+5 More</span>
+            </div>
+            <div class="product-footer">
+              <span class="product-price"><small>€</small>9<small>.99</small></span>
+              <a href="https://driclarity.gumroad.com/l/eqjym" target="_blank" class="btn-buy">Unlock PDF →</a>
+            </div>
+          </div>
+          <div class="featured-visual">
+            <div class="retina-rings">
+              <div class="ring"></div>
+              <div class="ring"></div>
+              <div class="ring"></div>
+              <div class="ring-core"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PREMIUM — COMING SOON -->
+        <div class="product-card fade-in" style="opacity:0.6; position:relative;">
+          <div class="coming-soon-overlay">Coming Soon</div>
+          <div class="eye-preview">
+            <div class="eye-orb eye-bg-3">🔬</div>
+          </div>
+          <span class="product-tag tag-premium">Premium Guide</span>
+          <h3 class="product-title">Beyond the Retina — Anterior Segment Cases</h3>
+          <p class="product-desc">The deeper dive. Slit-lamp findings, corneal pathology, cataract types, anterior uveitis, and acute angle closure — for those who want the full picture.</p>
+          <div class="product-cases">
+            <span class="case-chip">Corneal Ulcer</span>
+            <span class="case-chip">Hyphema</span>
+            <span class="case-chip">Keratoconus</span>
+            <span class="case-chip">Acute AAC</span>
+            <span class="case-chip">Hypopyon</span>
+          </div>
+          <div class="product-footer">
+            <span class="product-price" style="color:var(--muted);font-size:1rem;letter-spacing:0.1em;">In Development</span>
+            <span class="btn-buy" style="background:var(--muted);color:#050508;pointer-events:none;opacity:0.5;">Coming Soon</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text fade-in">
+          <span class="section-tag">The Author</span>
+          <h2 class="section-title">Real Clinical <em>Expertise</em></h2>
+          <p>These are not textbook illustrations. Every image you'll see in my guides is sourced from real clinical encounters — the same cases I photograph in clinic and share on TikTok.</p>
+          <p>I created iClarity because eye disease is systematically under-taught in medical curricula. Fundoscopy is feared. It doesn't have to be.</p>
+          <p>My guides translate complex retinal pathology into rapid visual patterns that stick — so you can walk into any clinic, pick up an ophthalmoscope, and know what you're looking at.</p>
+          <p style="font-size:0.72rem;line-height:1.9;color:var(--muted);letter-spacing:0.04em;font-style:italic;border-left:2px solid var(--gold);padding-left:1rem;margin-top:0.5rem;">Similar cases in my clinical practice.</p>
+          <div class="credentials">
+            <div class="cred-item"><div class="cred-dot"></div> Active Ophthalmologist & Optometrics Doctor</div>
+            <div class="cred-item"><div class="cred-dot"></div> Real-time clinical case documentation</div>
+            <div class="cred-item"><div class="cred-dot"></div> 3,900+ followers · 35K+ TikTok likes</div>
+            <div class="cred-item"><div class="cred-dot"></div> All guides reviewed for clinical accuracy</div>
+          </div>
+        </div>
+        <div class="about-visual fade-in">
+          <div class="tiktok-card">
+            <div class="tiktok-handle">@dr.iclarity</div>
+            <div class="tiktok-stats">
+              <div class="tk-stat">
+                <strong>3.9K</strong>
+                <span>Followers</span>
+              </div>
+              <div class="tk-stat">
+                <strong>35K</strong>
+                <span>Likes</span>
+              </div>
+              <div class="tk-stat">
+                <strong>Real</strong>
+                <span>Clinical Cases</span>
+              </div>
+            </div>
+            <p class="tk-desc">Ophthalmology Knowledge and Education · Eye facts and info · Real time videos/photos from real life clinical cases</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider"></div>
+
+  <!-- PROCESS -->
+  <section id="process">
+    <div class="container">
+      <div class="fade-in" style="text-align:center; margin-bottom:1rem;">
+        <span class="section-tag">How It Works</span>
+        <h2 class="section-title">Simple as <em>1, 2, 3</em></h2>
+      </div>
+      <div class="process-steps">
+        <div class="step fade-in">
+          <div class="step-num">01</div>
+          <div class="step-title">Choose a Guide</div>
+          <p class="step-desc">Browse the library and pick the PDF that fits where you are — the core retina guide, or wait for the upcoming premium guide.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-num">02</div>
+          <div class="step-title">Secure Checkout</div>
+          <p class="step-desc">Payments are processed securely through Gumroad. Pay once, own it forever — no subscriptions, no renewals.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-num">03</div>
+          <div class="step-title">Instant Download</div>
+          <p class="step-desc">Your PDF is delivered immediately to your inbox and Gumroad library. Study on any device, offline or online.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-num">04</div>
+          <div class="step-title">See More Clearly</div>
+          <p class="step-desc">Apply the rapid-recognition frameworks in clinic, on exams, and follow along with new cases on TikTok.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">iClarity</div>
+    <ul class="footer-links">
+      <li><a href="#products">Library</a></li>
+      <li><a href="https://www.tiktok.com/@dr.iclarity" target="_blank">TikTok</a></li>
+      <li><a href="https://www.instagram.com/dr.iclarity/" target="_blank">Instagram</a></li>
+    </ul>
+    <span class="footer-copy">© 2026 iClarity · All rights reserved</span>
+  </footer>
+
+</div>
+
+<!-- THREE.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ─── CURSOR ───────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+function animateCursor() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) *.12;
+  cursorRing.style.left = rx + 'px';
+  cursorRing.style.top = ry + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+document.querySelectorAll('a, button, .product-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursorRing.style.width = '60px';
+    cursorRing.style.height = '60px';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursorRing.style.width = '36px';
+    cursorRing.style.height = '36px';
+  });
+});
+
+// ─── THREE.JS BACKGROUND ──────────────────────────────
+const canvas = document.getElementById('bg-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 5;
+
+// Particle Field — floating retinal cells
+const particleCount = window.innerWidth < 768 ? 800 : 1800;
+const positions = new Float32Array(particleCount * 3);
+const colors = new Float32Array(particleCount * 3);
+const sizes = new Float32Array(particleCount);
+
+const palette = [
+  new THREE.Color('#c9a84c'),
+  new THREE.Color('#3a6bc4'),
+  new THREE.Color('#1a1a2e'),
+  new THREE.Color('#c9a84c'),
+  new THREE.Color('#ffffff'),
+];
+
+for (let i = 0; i < particleCount; i++) {
+  const i3 = i * 3;
+  positions[i3]     = (Math.random() - 0.5) * 20;
+  positions[i3 + 1] = (Math.random() - 0.5) * 20;
+  positions[i3 + 2] = (Math.random() - 0.5) * 10 - 3;
+
+  const col = palette[Math.floor(Math.random() * palette.length)];
+  colors[i3]     = col.r;
+  colors[i3 + 1] = col.g;
+  colors[i3 + 2] = col.b;
+
+  sizes[i] = Math.random() * 2.5 + 0.5;
+}
+
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+const mat = new THREE.PointsMaterial({
+  size: 0.04,
+  vertexColors: true,
+  transparent: true,
+  opacity: 0.55,
+  sizeAttenuation: true,
+});
+
+const particles = new THREE.Points(geo, mat);
+scene.add(particles);
+
+// Large blurred eye-like torus
+const torusGeo = new THREE.TorusGeometry(2.5, 0.02, 8, 100);
+const torusMat = new THREE.MeshBasicMaterial({ color: 0xc9a84c, transparent: true, opacity: 0.06 });
+const torus = new THREE.Mesh(torusGeo, torusMat);
+scene.add(torus);
+
+const torus2Geo = new THREE.TorusGeometry(1.8, 0.015, 8, 100);
+const torus2Mat = new THREE.MeshBasicMaterial({ color: 0x3a6bc4, transparent: true, opacity: 0.05 });
+const torus2 = new THREE.Mesh(torus2Geo, torus2Mat);
+scene.add(torus2);
+
+let mouseX = 0, mouseY = 0;
+document.addEventListener('mousemove', e => {
+  mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+  mouseY = -(e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+let t = 0;
+function animate() {
+  requestAnimationFrame(animate);
+  t += 0.003;
+
+  particles.rotation.y = t * 0.05 + mouseX * 0.08;
+  particles.rotation.x = mouseY * 0.05;
+
+  torus.rotation.z = t * 0.2;
+  torus.rotation.x = Math.sin(t * 0.3) * 0.15 + mouseY * 0.1;
+  torus.rotation.y = mouseX * 0.08;
+
+  torus2.rotation.z = -t * 0.15;
+  torus2.rotation.y = Math.cos(t * 0.2) * 0.1;
+
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// ─── SCROLL FADE IN ───────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
