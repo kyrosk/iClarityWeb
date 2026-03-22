@@ -78,22 +78,23 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.6rem 3rem;
+    padding: 1rem 1.2rem;
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(20px);
     background: rgba(5,5,8,0.6);
   }
   .nav-logo {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 300;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.18em;
     color: var(--gold);
     text-decoration: none;
   }
   .nav-logo span { color: var(--text); }
   .nav-links {
-    display: flex; gap: 2.5rem;
+    display: none;
+    gap: 2.5rem;
     list-style: none;
     font-size: 0.68rem;
     letter-spacing: 0.2em;
@@ -106,12 +107,30 @@
   }
   .nav-links a:hover { color: var(--gold); }
   .nav-badge {
+    display: none;
     font-size: 0.62rem;
     letter-spacing: 0.15em;
     color: var(--muted);
     border: 1px solid var(--border);
     padding: 0.3rem 0.8rem;
     border-radius: 2px;
+  }
+  .nav-cta-mob {
+    background: var(--gold);
+    color: #050508;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.42rem 0.9rem;
+    text-decoration: none;
+  }
+  @media (min-width: 768px) {
+    nav { padding: 1.6rem 3rem; }
+    .nav-logo { font-size: 1.5rem; letter-spacing: 0.25em; }
+    .nav-links { display: flex; }
+    .nav-badge { display: inline-block; }
+    .nav-cta-mob { display: none; }
   }
 
   /* HERO */
@@ -122,24 +141,24 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 8rem 2rem 4rem;
+    padding: 6rem 1.5rem 3rem;
     position: relative;
   }
 
   .hero-tag {
-    font-size: 0.62rem;
-    letter-spacing: 0.35em;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--gold);
     border: 1px solid var(--border);
-    padding: 0.4rem 1.2rem;
-    margin-bottom: 2.5rem;
+    padding: 0.35rem 1rem;
+    margin-bottom: 2rem;
     display: inline-block;
   }
 
   .hero-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-size: clamp(3rem, 10vw, 8rem);
     font-weight: 300;
     line-height: 0.92;
     letter-spacing: -0.01em;
@@ -151,8 +170,8 @@
   }
   .hero-title .line2 {
     display: block;
-    font-size: clamp(1.8rem, 5vw, 3.8rem);
-    letter-spacing: 0.25em;
+    font-size: clamp(1.2rem, 4vw, 3.8rem);
+    letter-spacing: 0.2em;
     font-weight: 300;
     color: var(--muted);
     margin-top: 0.4rem;
@@ -160,27 +179,27 @@
 
   .hero-sub {
     max-width: 480px;
-    margin: 2.5rem auto;
-    font-size: 0.72rem;
+    margin: 2rem auto;
+    font-size: 0.68rem;
     line-height: 1.9;
     color: var(--muted);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
   }
 
   .hero-cta {
-    display: flex; gap: 1rem; justify-content: center;
+    display: flex; gap: 0.8rem; justify-content: center;
     flex-wrap: wrap;
   }
   .btn-primary {
     background: var(--gold);
     color: #050508;
     border: none;
-    padding: 0.9rem 2.5rem;
+    padding: 0.85rem 1.8rem;
     font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.2em;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    cursor: none;
+    cursor: pointer;
     transition: background 0.3s, transform 0.2s;
     text-decoration: none;
     display: inline-block;
@@ -191,12 +210,12 @@
     background: transparent;
     color: var(--text);
     border: 1px solid var(--border);
-    padding: 0.9rem 2.5rem;
+    padding: 0.85rem 1.8rem;
     font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.2em;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    cursor: none;
+    cursor: pointer;
     transition: border-color 0.3s, color 0.3s;
     text-decoration: none;
     display: inline-block;
@@ -207,30 +226,41 @@
   .stats-row {
     display: flex;
     justify-content: center;
-    gap: 4rem;
-    margin-top: 5rem;
-    padding-top: 3rem;
+    gap: 2rem;
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
     border-top: 1px solid var(--border);
+    width: 100%;
+    max-width: 500px;
   }
   .stat-item { text-align: center; }
   .stat-number {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 2.8rem;
+    font-size: clamp(1.8rem, 6vw, 2.8rem);
     font-weight: 300;
     color: var(--gold);
     display: block;
   }
   .stat-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--muted);
     margin-top: 0.3rem;
     display: block;
   }
 
+  @media (min-width: 768px) {
+    #hero { padding: 8rem 2rem 4rem; }
+    .hero-tag { font-size: 0.62rem; letter-spacing: 0.35em; margin-bottom: 2.5rem; }
+    .hero-sub { font-size: 0.72rem; letter-spacing: 0.06em; margin: 2.5rem auto; }
+    .btn-primary, .btn-ghost { padding: 0.9rem 2.5rem; font-size: 0.68rem; letter-spacing: 0.2em; }
+    .stats-row { gap: 4rem; margin-top: 5rem; padding-top: 3rem; }
+    .stat-label { font-size: 0.6rem; letter-spacing: 0.25em; }
+  }
+
   /* SECTION */
-  section { padding: 8rem 2rem; }
+  section { padding: 4rem 1.2rem; }
   .section-tag {
     font-size: 0.6rem;
     letter-spacing: 0.35em;
@@ -241,34 +271,44 @@
   }
   .section-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-size: clamp(2rem, 6vw, 3.8rem);
     font-weight: 300;
     margin-bottom: 1.5rem;
     line-height: 1.1;
   }
   .section-title em { font-style: italic; color: var(--gold); }
 
+  @media (min-width: 768px) {
+    section { padding: 8rem 2rem; }
+  }
+
   /* GRID */
   .container { max-width: 1200px; margin: 0 auto; }
 
   /* PRODUCTS */
   #products { background: transparent; }
-  .products-header { text-align: center; margin-bottom: 4rem; }
+  .products-header { text-align: center; margin-bottom: 3rem; }
 
   .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1.5px;
     background: var(--border);
+  }
+  @media (min-width: 640px) {
+    .products-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
   }
 
   .product-card {
     background: var(--surface);
-    padding: 2.8rem 2.5rem;
+    padding: 2rem 1.6rem;
     position: relative;
     overflow: hidden;
     transition: background 0.4s;
-    cursor: none;
+    cursor: pointer;
+  }
+  @media (min-width: 768px) {
+    .product-card { padding: 2.8rem 2.5rem; cursor: none; }
   }
   .product-card:hover { background: #0d0d18; }
 
@@ -397,25 +437,29 @@
 
   /* FEATURED CARD */
   .product-card.featured {
-    grid-column: span 2;
+    grid-column: span 1;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
     align-items: center;
     background: linear-gradient(135deg, #0a0a12 0%, #0d0a18 100%);
   }
-  @media (max-width: 768px) {
+  @media (min-width: 900px) {
     .product-card.featured {
-      grid-column: span 1;
-      grid-template-columns: 1fr;
+      grid-column: span 2;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
     }
   }
   .featured-visual {
     position: relative;
-    height: 260px;
+    height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  @media (min-width: 768px) {
+    .featured-visual { height: 260px; }
   }
   .retina-rings {
     position: relative;
@@ -452,11 +496,13 @@
   }
   .about-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6rem;
+    grid-template-columns: 1fr;
+    gap: 3rem;
     align-items: center;
   }
-  @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; gap: 3rem; } }
+  @media (min-width: 768px) {
+    .about-grid { grid-template-columns: 1fr 1fr; gap: 6rem; }
+  }
 
   .about-text p {
     font-size: 0.72rem;
@@ -535,16 +581,21 @@
   }
   .process-steps {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 1.5px;
     background: var(--border);
-    margin-top: 4rem;
+    margin-top: 3rem;
   }
-  @media (max-width: 768px) { .process-steps { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 768px) {
+    .process-steps { grid-template-columns: repeat(4, 1fr); margin-top: 4rem; }
+  }
   .step {
     background: var(--surface);
-    padding: 2.5rem 2rem;
+    padding: 1.8rem 1.4rem;
     position: relative;
+  }
+  @media (min-width: 768px) {
+    .step { padding: 2.5rem 2rem; }
   }
   .step-num {
     font-family: 'Cormorant Garamond', serif;
@@ -571,12 +622,21 @@
   /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
-    padding: 3rem;
+    padding: 2rem 1.5rem;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
+    text-align: center;
+    gap: 1.2rem;
+  }
+  @media (min-width: 768px) {
+    footer {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3rem;
+      text-align: left;
+    }
   }
   .footer-brand {
     font-family: 'Cormorant Garamond', serif;
@@ -643,6 +703,20 @@
   .eye-bg-2 { background: radial-gradient(circle at 40% 50%, #1a2a50 0%, #0a1530 60%, #050a18 100%); }
   .eye-bg-3 { background: radial-gradient(circle at 40% 45%, #2a1a40 0%, #150a25 60%, #0a0512 100%); }
 
+  /* COMING SOON OVERLAY */
+  .coming-soon-overlay {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: rgba(110,106,98,0.15);
+    border: 1px solid rgba(110,106,98,0.3);
+    color: var(--muted);
+    font-size: 0.52rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border-radius: 2px;
+  }
+
   /* NOTIFICATION BADGE */
   .new-badge {
     position: absolute;
@@ -654,6 +728,8 @@
     text-transform: uppercase;
     padding: 0.2rem 0.6rem;
   }
+
+
 </style>
 </head>
 <body>
@@ -673,7 +749,10 @@
     <li><a href="#about">About</a></li>
     <li><a href="#process">How it Works</a></li>
   </ul>
-  <span class="nav-badge">MD · Ophthalmology</span>
+  <div style="display:flex;align-items:center;gap:0.7rem;">
+    <a href="#products" class="nav-cta-mob">Get PDF</a>
+    <span class="nav-badge">MD · Ophthalmology</span>
+  </div>
 </nav>
 
 <!-- OVERLAY CONTENT -->
@@ -724,29 +803,9 @@
 
       <div class="products-grid">
 
-        <!-- FREE STARTER -->
-        <div class="product-card fade-in">
-          <div class="eye-preview">
-            <div class="eye-orb eye-bg-1">👁️</div>
-          </div>
-          <span class="product-tag tag-free">Free Preview</span>
-          <h3 class="product-title">Normal vs. Abnormal — A First Look</h3>
-          <p class="product-desc">Start here. Learn to distinguish a healthy retina from pathology using labeled, annotated fundoscopy images. No prior experience needed.</p>
-          <div class="product-cases">
-            <span class="case-chip">Normal Fundus</span>
-            <span class="case-chip">Optic Disc Anatomy</span>
-            <span class="case-chip">Macula Basics</span>
-            <span class="case-chip">Cup-to-Disc Ratio</span>
-          </div>
-          <div class="product-footer">
-            <span class="product-price free-price">FREE</span>
-            <a href="https://gumroad.com" target="_blank" class="btn-free">Download →</a>
-          </div>
-        </div>
-
-        <!-- MAIN PDF -->
+        <!-- CORE GUIDE -->
         <div class="product-card featured fade-in">
-          <span class="new-badge">Bestseller</span>
+          <span class="new-badge">Available Now</span>
           <div>
             <span class="product-tag tag-paid">Core Guide</span>
             <h3 class="product-title">Retina in Minutes — 12 High-Yield Cases</h3>
@@ -763,7 +822,7 @@
             </div>
             <div class="product-footer">
               <span class="product-price"><small>€</small>9<small>.99</small></span>
-              <a href="https://gumroad.com" target="_blank" class="btn-buy">Unlock PDF →</a>
+              <a href="https://driclarity.gumroad.com/l/eqjym" target="_blank" class="btn-buy">Unlock PDF →</a>
             </div>
           </div>
           <div class="featured-visual">
@@ -776,12 +835,13 @@
           </div>
         </div>
 
-        <!-- ADVANCED PDF -->
-        <div class="product-card fade-in">
+        <!-- PREMIUM — COMING SOON -->
+        <div class="product-card fade-in" style="opacity:0.6; position:relative;">
+          <div class="coming-soon-overlay">Coming Soon</div>
           <div class="eye-preview">
             <div class="eye-orb eye-bg-3">🔬</div>
           </div>
-          <span class="product-tag tag-premium">Advanced</span>
+          <span class="product-tag tag-premium">Premium Guide</span>
           <h3 class="product-title">Beyond the Retina — Anterior Segment Cases</h3>
           <p class="product-desc">The deeper dive. Slit-lamp findings, corneal pathology, cataract types, anterior uveitis, and acute angle closure — for those who want the full picture.</p>
           <div class="product-cases">
@@ -792,27 +852,8 @@
             <span class="case-chip">Hypopyon</span>
           </div>
           <div class="product-footer">
-            <span class="product-price"><small>€</small>12<small>.99</small></span>
-            <a href="https://gumroad.com" target="_blank" class="btn-buy">Unlock PDF →</a>
-          </div>
-        </div>
-
-        <!-- BUNDLE -->
-        <div class="product-card fade-in" style="background: linear-gradient(135deg, #0a0a12, #0a0d18);">
-          <div class="eye-preview">
-            <div class="eye-orb eye-bg-2">📦</div>
-          </div>
-          <span class="product-tag tag-paid">Bundle</span>
-          <h3 class="product-title">The Complete iClarity Bundle</h3>
-          <p class="product-desc">Get both premium guides at a discount. Retina + Anterior Segment — everything you need for ophthalmic clinical recognition. Save €5 vs individual purchase.</p>
-          <div class="product-cases">
-            <span class="case-chip">All 12 Retina Cases</span>
-            <span class="case-chip">All Anterior Cases</span>
-            <span class="case-chip">Bonus: Quick Ref Card</span>
-          </div>
-          <div class="product-footer">
-            <span class="product-price"><small>€</small>17<small>.99</small></span>
-            <a href="https://gumroad.com" target="_blank" class="btn-buy">Get Bundle →</a>
+            <span class="product-price" style="color:var(--muted);font-size:1rem;letter-spacing:0.1em;">In Development</span>
+            <span class="btn-buy" style="background:var(--muted);color:#050508;pointer-events:none;opacity:0.5;">Coming Soon</span>
           </div>
         </div>
 
@@ -832,6 +873,7 @@
           <p>These are not textbook illustrations. Every image you'll see in my guides is sourced from real clinical encounters — the same cases I photograph in clinic and share on TikTok.</p>
           <p>I created iClarity because eye disease is systematically under-taught in medical curricula. Fundoscopy is feared. It doesn't have to be.</p>
           <p>My guides translate complex retinal pathology into rapid visual patterns that stick — so you can walk into any clinic, pick up an ophthalmoscope, and know what you're looking at.</p>
+          <p style="font-size:0.72rem;line-height:1.9;color:var(--muted);letter-spacing:0.04em;font-style:italic;border-left:2px solid var(--gold);padding-left:1rem;margin-top:0.5rem;">Similar cases in my clinical practice.</p>
           <div class="credentials">
             <div class="cred-item"><div class="cred-dot"></div> Active Ophthalmologist & Optometrics Doctor</div>
             <div class="cred-item"><div class="cred-dot"></div> Real-time clinical case documentation</div>
@@ -876,7 +918,7 @@
         <div class="step fade-in">
           <div class="step-num">01</div>
           <div class="step-title">Choose a Guide</div>
-          <p class="step-desc">Browse the library and pick the PDF that fits where you are — free starter, core retina guide, or the full bundle.</p>
+          <p class="step-desc">Browse the library and pick the PDF that fits where you are — the core retina guide, or wait for the upcoming premium guide.</p>
         </div>
         <div class="step fade-in">
           <div class="step-num">02</div>
@@ -903,7 +945,7 @@
     <ul class="footer-links">
       <li><a href="#products">Library</a></li>
       <li><a href="https://www.tiktok.com/@dr.iclarity" target="_blank">TikTok</a></li>
-      <li><a href="https://www.instagram.com/dr.iclarit..." target="_blank">Instagram</a></li>
+      <li><a href="https://www.instagram.com/dr.iclarity/" target="_blank">Instagram</a></li>
     </ul>
     <span class="footer-copy">© 2026 iClarity · All rights reserved</span>
   </footer>
@@ -955,7 +997,7 @@ const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerH
 camera.position.z = 5;
 
 // Particle Field — floating retinal cells
-const particleCount = 1800;
+const particleCount = window.innerWidth < 768 ? 800 : 1800;
 const positions = new Float32Array(particleCount * 3);
 const colors = new Float32Array(particleCount * 3);
 const sizes = new Float32Array(particleCount);
